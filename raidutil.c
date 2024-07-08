@@ -80,9 +80,9 @@ int main(int argc, char* argv[])
                 printf("Disks status:\n");
                 regcomp(&regex, "[^ \f\n\r\t\v]+",REG_EXTENDED);
                 regmatch_t disk_pmatch[7];
-                regexec(&regex, disks[0], 7, disk_pmatch, 0);
+                int gfg = regexec(&regex, disks[0], 7, disk_pmatch, 0);
 
-                printf("%d\n", disk_pmatch[3].rm_so);
+                printf("%d\n", gfg);
                 printf("%.*s\n", disk_pmatch[3].rm_eo - disk_pmatch[3].rm_so, disks[0]);
                 printf("%.*s\n", disk_pmatch[4].rm_eo - disk_pmatch[4].rm_so, disks[0]);
                 printf("%.*s\n", disk_pmatch[6].rm_eo - disk_pmatch[6].rm_so, disks[0]);
