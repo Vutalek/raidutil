@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
         {
             for(int i = 0; i < n; i++)
                 printf("/dev/%s\n", raid_arrays[i]);
-            printf("\nInformation on each RAID array.\n");
+            printf("\nInformation on each RAID array.\n\n");
             for(int i = 0; i < n; i++)
             {
                 char command[100];
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
                 while(fgets(buffer, 256, detail_info) != NULL)
                 {
                     copy_to_cmd_if_found(buffer, "Persistence");
-                    copy_to_cmd_if_found(buffer, "State");
+                    copy_to_cmd_if_found(buffer, "State : ");
                     copy_to_cmd_if_found(buffer, "Active Devices");
                     copy_to_cmd_if_found(buffer, "Working Devices");
                     copy_to_cmd_if_found(buffer, "Failed Devices");
@@ -73,6 +73,9 @@ int main(int argc, char* argv[])
                     }
                 }
                 regfree(&regex);
+
+                printf("%d", k);
+
                 pclose(detail_info);
                 for(int j = 0; j < k; j++)
                     free(disks[j]);
