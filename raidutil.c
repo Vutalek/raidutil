@@ -127,6 +127,8 @@ void copy_to_cmd_if_found(char* buffer, char* need_to_found)
         regmatch_t temp[1];
         char** disk_pm;
         char* subbuffer = buffer;
+        disk_pm = (char**) realloc(disk_pm, sizeof(char*) * (1));
+        prinf("1\n");
         for(int j = 0; j < 3; j++)
         {
             regexec(&regex, subbuffer, 1, temp, 0);
