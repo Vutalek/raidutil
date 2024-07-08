@@ -82,9 +82,9 @@ int main(int argc, char* argv[])
                 regmatch_t disk_pmatch[7];
                 regexec(&regex, disks[0], 7, disk_pmatch, 0);
 
-                printf("%.*s", disk_pmatch[3].rm_eo - disk_pmatch[3].rm_so, disks[0]);
-                printf("%.*s", disk_pmatch[4].rm_eo - disk_pmatch[4].rm_so, disks[0]);
-                printf("%.*s", disk_pmatch[6].rm_eo - disk_pmatch[6].rm_so, disks[0]);
+                printf("%.*s\n", disk_pmatch[3].rm_eo - disk_pmatch[3].rm_so, disks[0]);
+                printf("%.*s\n", disk_pmatch[4].rm_eo - disk_pmatch[4].rm_so, disks[0]);
+                printf("%.*s\n", disk_pmatch[6].rm_eo - disk_pmatch[6].rm_so, disks[0]);
 
                 regfree(&regex);
 
