@@ -86,8 +86,8 @@ int main(int argc, char* argv[])
                 {
                     regexec(&regex, subbuffer, 1, temp, 0);
                     disk_pmatch = (char**) realloc(disk_pmatch, sizeof(char*) * (j+1));
-                    sprintf("%.*s", temp[0].rm_eo - temp[0].rm_so, subbuffer + temp[0].rm_so);
                     disk_pmatch[j] = (char*) malloc(temp[0].rm_eo - temp[0].rm_so);
+                    sprintf("%.*s", temp[0].rm_eo - temp[0].rm_so, subbuffer + temp[0].rm_so);
                     subbuffer += temp[0].rm_eo;
                 }
                 printf(disk_pmatch[3]);
