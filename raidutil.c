@@ -81,8 +81,7 @@ int main(int argc, char* argv[])
                 regcomp(&regex, "[^ \f\n\r\t\v]+", REG_EXTENDED);
                 regmatch_t temp[1];
                 regmatch_t disk_pmatch[7];
-                char subbuffer[256];
-                memcpy(subbuffer, disks[0], 256);
+                char* subbuffer = disks[0];
                 for(int j = 1; j < 7; j++)
                 {
                     regexec(&regex, subbuffer, 1, temp, 0);
