@@ -75,7 +75,12 @@ int main(int argc, char* argv[])
                 }
                 regfree(&regex);
 
-                printf("%d", k);
+                //mdadm --examine /dev/sdX
+
+                printf("Disks status:\n");
+                char* token;
+                while((token = strsep(&disks[0], " \t")))
+                    printf("--> %s\n", token);
 
                 pclose(detail_info);
                 for(int j = 0; j < k; j++)
