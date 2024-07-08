@@ -81,16 +81,10 @@ int main(int argc, char* argv[])
                 regcomp(&regex, "[^ \f\n\r\t\v]+", REG_EXTENDED);
                 regmatch_t temp[1];
                 regmatch_t disk_pmatch[7];
-                regexec(&regex, disks[0], 1, temp, 0);
-                disk_pmatch[0].rm_so = temp[0].rm_so;
-                disk_pmatch[0].rm_eo = temp[0].rm_eo;
-                char subbuffer[256];
                 for(int j = 1; j < 7; j++)
                 {
-                    strncpy(subbuffer, buffer+(disk_pmatch[j-1].rm_eo), (256-disk_pmatch[j-1].rm_eo));
-                    regexec(&regex, subbuffer, 1, temp, 0);
-                    disk_pmatch[j].rm_so = temp[0].rm_so;
-                    disk_pmatch[j].rm_eo = temp[0].rm_eo;
+                    regexec(&regex, disks[0], 1, temp, 0);
+                    printf("%.*s\n", temp[0].rm_eo - temp[0].rm_so, disks[0]);
                 }
 
                 printf("%.*s\n", disk_pmatch[3].rm_eo - disk_pmatch[3].rm_so, disks[0]);
