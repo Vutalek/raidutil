@@ -94,9 +94,6 @@ int main(int argc, char* argv[])
                     }
                     printf("[%s] %s %s\n", disk_pmatch[3], disk_pmatch[6], disk_pmatch[4]);
                     regfree(&regex);
-                    for(int j = 0; j < 7; j++)
-                        free(disk_pmatch[j]);
-                    free(disk_pmatch);
                 }
                 printf("\n");
 
