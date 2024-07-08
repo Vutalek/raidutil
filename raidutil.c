@@ -94,6 +94,9 @@ int main(int argc, char* argv[])
                     }
                     printf("[%s] %s %s\n", disk_pmatch[3], disk_pmatch[6], disk_pmatch[4]);
                     regfree(&regex);
+                    for(int j = 0; j < 7; j++)
+                    free(disk_pmatch[j]);
+                free(disk_pmatch);
                 }
                 printf("\n");
 
@@ -101,9 +104,6 @@ int main(int argc, char* argv[])
                 for(int j = 0; j < k; j++)
                     free(disks[j]);
                 free(disks);
-                for(int j = 0; j < 7; j++)
-                    free(disk_pmatch[j]);
-                free(disk_pmatch);
             }
         }
         for(int i = 0; i < n; i++)
@@ -136,7 +136,7 @@ void copy_to_cmd_if_found(char* buffer, char* need_to_found)
             subbuffer += temp[0].rm_eo;
         }
         printf("%s%s %s\n", disk_pmatch[0], disk_pmatch[1], disk_pmatch[2]);
-        regfree(&regex);
+        regfree(&regext);
         for(int j = 0; j < 3; j++)
             free(disk_pmatch[j]);
         free(disk_pmatch);
