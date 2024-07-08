@@ -79,8 +79,11 @@ int main(int argc, char* argv[])
 
                 printf("Disks status:\n");
                 char* token;
-                while((token = strtok(disks[0], " \f\n\r\t\v")))
+                while(token != NULL)
+                {
                     printf("--> %s\n", token);
+                    token = strtok(disks[0], " \f\n\r\t\v");
+                }
 
                 pclose(detail_info);
                 for(int j = 0; j < k; j++)
