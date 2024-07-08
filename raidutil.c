@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
                         sprintf(disk_pmatch[j], "%.*s", temp[0].rm_eo - temp[0].rm_so, subbuffer + temp[0].rm_so);
                         subbuffer += temp[0].rm_eo;
                     }
-                    printf("%d %s %s\n", disk_pmatch[3], disk_pmatch[6], disk_pmatch[4]);
+                    printf("[%s] %s %s\n", disk_pmatch[3], disk_pmatch[6], disk_pmatch[4]);
                     regfree(&regex);
                 }
                 printf("\n");
