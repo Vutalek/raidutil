@@ -95,8 +95,8 @@ int main(int argc, char* argv[])
                     printf("[%s] %s %s\n", disk_pmatch[3], disk_pmatch[6], disk_pmatch[4]);
                     regfree(&regex);
                     for(int j = 0; j < 7; j++)
-                    free(disk_pmatch[j]);
-                free(disk_pmatch);
+                        free(disk_pmatch[j]);
+                    free(disk_pmatch);
                 }
                 printf("\n");
 
@@ -122,21 +122,19 @@ void copy_to_cmd_if_found(char* buffer, char* need_to_found)
     a = regexec(&regex, buffer, 0, NULL, 0);
     if (!a)
     {
-        regex_t regext;
-        regcomp(&regext, "[^ \f\n\r\t\v]+", REG_EXTENDED);
+        regfree(&regex);
+        regcomp(&regex, "[^ \f\n\r\t\v]+", REG_EXTENDED);
         regmatch_t temp[1];
         char** disk_pmatch;
         char* subbuffer = buffer;
         for(int j = 0; j < 3; j++)
         {
-            regexec(&regext, subbuffer, 1, temp, 0);
+            regexec(&regex, subbuffer, 1, temp, 0);
             disk_pmatch = (char**) realloc(disk_pmatch, sizeof(char*) * (j+1));
             disk_pmatch[j] = (char*) malloc(temp[0].rm_eo - temp[0].rm_so);
             sprintf(disk_pmatch[j], "%.*s", temp[0].rm_eo - temp[0].rm_so, subbuffer + temp[0].rm_so);
             subbuffer += temp[0].rm_eo;
         }
-        printf("%s%s %s\n", disk_pmatch[0], disk_pmatch[1], disk_pmatch[2]);
-        regfree(&regext);
         for(int j = 0; j < 3; j++)
             free(disk_pmatch[j]);
         free(disk_pmatch);
