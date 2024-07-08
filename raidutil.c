@@ -120,26 +120,6 @@ void copy_to_cmd_if_found(char* buffer, char* need_to_found)
     regex_t regex;
     int a = regcomp(&regex, need_to_found, 0);
     a = regexec(&regex, buffer, 0, NULL, 0);
-    if (!a)
-    {
-        regfree(&regex);
-        regcomp(&regex, "[^ \f\n\r\t\v]+", REG_EXTENDED);
-        regmatch_t temp[1];
-        char** disk_pm;
-        char* subbuffer = buffer;
-        disk_pm = (char**) realloc(disk_pm, sizeof(char*) * (1));
-        prinf("1\n");
-        for(int j = 0; j < 3; j++)
-        {
-            regexec(&regex, subbuffer, 1, temp, 0);
-            disk_pm = (char**) realloc(disk_pm, sizeof(char*) * (j+1));
-            disk_pm[j] = (char*) malloc(temp[0].rm_eo - temp[0].rm_so);
-            sprintf(disk_pm[j], "%.*s", temp[0].rm_eo - temp[0].rm_so, subbuffer + temp[0].rm_so);
-            subbuffer += temp[0].rm_eo;
-        }
-        for(int j = 0; j < 3; j++)
-            free(disk_pm[j]);
-        free(disk_pm);
-    }
+    if (!a) printf(buffer);
     regfree(&regex);
 }
