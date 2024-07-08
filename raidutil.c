@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
                 {
                     copy_to_cmd_if_found(buffer, "Persistence");
                     copy_to_cmd_if_found(buffer, "State");
-                    copy_to_cmd_if_found(buffer, "Acive Devices");
+                    copy_to_cmd_if_found(buffer, "Active Devices");
                     copy_to_cmd_if_found(buffer, "Working Devices");
                     copy_to_cmd_if_found(buffer, "Failed Devices");
                     copy_to_cmd_if_found(buffer, "Spare Devices");
@@ -71,6 +71,7 @@ int main(int argc, char* argv[])
                         i++;
                     }
                 }
+                regfree(&regex);
                 int k = i;
                 pclose(detail_info);
                 for(int i = 0; i < k; i++)
