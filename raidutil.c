@@ -78,9 +78,15 @@ int main(int argc, char* argv[])
                 //mdadm --examine /dev/sdX
 
                 printf("Disks status:\n");
-                char* token;
-                while((token = strsep(&disks[0], " \t")))
-                    printf("--> %s\n", token);
+                regcomp(&regex, "[^ \f\n\r\t\v]+",REG_EXTENDED);
+                regmatch_t disk_pmatch[7];
+                regexec(&regex, disks[0], 7, disk_pmatch, 0);
+
+                printf("%.*s", disk_pmatch[3].rm_eo - disk_pmatch[3].rm_so, disks[0]);
+                printf("%.*s", disk_pmatch[4].rm_eo - disk_pmatch[4].rm_so, disks[0]);
+                printf("%.*s", disk_pmatch[6].rm_eo - disk_pmatch[6].rm_so, disks[0]);
+
+                regfree(&regex);
 
                 pclose(detail_info);
                 for(int j = 0; j < k; j++)
