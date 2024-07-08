@@ -80,14 +80,19 @@ int main(int argc, char* argv[])
                 printf("Disks status:\n");
                 regcomp(&regex, "[^ \f\n\r\t\v]+", REG_EXTENDED);
                 regmatch_t temp[1];
-                regmatch_t disk_pmatch[7];
+                char** disk_pmatch;
                 char* subbuffer = disks[0];
-                for(int j = 1; j < 7; j++)
+                for(int j = 0; j < 7; j++)
                 {
                     regexec(&regex, subbuffer, 1, temp, 0);
-                    printf("%.*s\n", temp[0].rm_eo - temp[0].rm_so, subbuffer + temp[0].rm_so);
+                    disk_pmatch = (char**) realloc(disk_pmatch, (char*) * (j+1));
+                    sprintf("%.*s", temp[0].rm_eo - temp[0].rm_so, subbuffer + temp[0].rm_so);
+                    disk_pmatch[j] = (char*) malloc(temp[0].rm_eo - temp[0].rm_so);
                     subbuffer += temp[0].rm_eo;
                 }
+                printf(disk_pmatch[3]);
+                printf(disk_pmatch[4]);
+                printf(disk_pmatch[6]);
 
                 regfree(&regex);
 
