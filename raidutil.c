@@ -85,6 +85,7 @@ int main(int argc, char* argv[])
                 {
                     regexec(&regex, disks[0], 1, temp, 0);
                     printf("%.*s\n", temp[0].rm_eo - temp[0].rm_so, disks[0] + temp[0].rm_so);
+                    disks += temp[0].rm_eo;
                 }
 
                 regfree(&regex);
