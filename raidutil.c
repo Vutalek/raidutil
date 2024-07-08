@@ -68,6 +68,7 @@ int main(int argc, char* argv[])
                     if (!a)
                     {
                         disks = (char**) realloc(disks, sizeof(char*) * (k+1));
+                        disks[k] = (char*) malloc(256);
                         disks[k] = memcpy(disks[k], buffer, 256);
                         k++;
                     }
