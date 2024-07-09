@@ -94,6 +94,7 @@ int main(int argc, char* argv[])
                     }
                     printf("[%s] %s %s\n", disk_pmatch[3], disk_pmatch[6], disk_pmatch[4]);
                     regfree(&regex);
+                    //разве не надо очистить disk_pmatch? но он вроде где-то уже очищается, в конце цикла?
                 }
                 printf("\n");
 
