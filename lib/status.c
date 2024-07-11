@@ -7,9 +7,29 @@
 #include <regex.h>
 #include <stdlib.h>
 
+void status()
+{
+    int number_of_arrays = 0;
+    char** raid_arrays = find_raid_arrays(&number_of_arrays);
+    if (raid_arrays != NULL)
+    {
+        printf("Found %d RAID-arrays:\n", number_of_arrays);
+        for(int i = 0; i < number_of_arrays; i++)
+            printf("/dev/%s\n", raid_arrays[i]);
+
+        printf("\nInformation on each RAID array.\n\n");
+        for(int i = 0; i < number_of_arrays; i++)
+            raid_array_status(raid_arrays[i]);
+
+        clean2d((void***)&raid_arrays, number_of_arrays);
+    }
+    else
+        printf("There is no RAID.\n");
+}
+
 char** find_raid_arrays(int* num)
 {
-    char** result;
+    char** result = 0;
     *num = 0;
     regex_t regex;
     regmatch_t pmatch[1];
@@ -45,7 +65,7 @@ void raid_array_status(char* arr)
     fgets(buffer, 256, detail_info);
     printf(buffer);
 
-    char** disks;
+    char** disks = 0;
     int number_of_disks = 0;
     regex_t regex;
     int regres = regcomp(&regex, "/dev/sd", 0);
@@ -82,10 +102,9 @@ void copy_to_cmd_if_found_status_str(char* str, char* need_to_find)
     char* copy_str = regex_match_copy_full_str(str, need_to_find);
     if (copy_str != NULL)
     {
-        int n = 0;
-        char** parsed_str = split(copy_str, " ", &n);
-        printf("%s%s %s", parsed_str[0], parsed_str[1], parsed_str[2]);
-        clean2d((void***)&parsed_str, n);
+        char* trimmed_str = trim(copy_str);
+        printf("%s\n", trimmed_str);
+        free(trimmed_str);
         free(copy_str);
     }
 }
@@ -93,7 +112,7 @@ void copy_to_cmd_if_found_status_str(char* str, char* need_to_find)
 void disk_from_array_short_status(char* mdadm_detail_disk_str)
 {
     int n = 0;
-    char** parsed_str = split(mdadm_detail_disk_str, " ", &n);
+    char** parsed_str = split(mdadm_detail_disk_str, " \n", &n);
     printf("[%s] %s %s\n", parsed_str[3], parsed_str[6], parsed_str[4]);
     clean2d((void***)&parsed_str, n);
 }

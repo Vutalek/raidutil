@@ -3,6 +3,8 @@
 
 char** split(char* str, char* delimeters, int* array_counter);
 
+char* trim(char* str);
+
 char* copy(char* str);
 
 void clean2d(void*** arr, int rows);

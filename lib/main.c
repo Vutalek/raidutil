@@ -12,20 +12,14 @@ int main(int argc, char* argv[])
     if (argc == 1)
         printf("No work to do.\n");
     else if (!strcmp(argv[1], "status"))
+        status();
+    else if (!strcmp(argv[1], "test"))
     {
-        char** raid_arrays;
-        int number_of_arrays = 0;
-        raid_arrays = find_raid_arrays(&number_of_arrays);
-
-        printf("Found %d RAID-arrays:\n", number_of_arrays);
-        for(int i = 0; i < number_of_arrays; i++)
-            printf("/dev/%s\n", raid_arrays[i]);
-
-        printf("\nInformation on each RAID array.\n\n");
-        for(int i = 0; i < number_of_arrays; i++)
-            raid_array_status(raid_arrays[i]);
-
-        clean2d((void***)&raid_arrays, number_of_arrays);
+        char* ff = "         asdasd a                \n\n\n";
+        printf(ff);
+        char* fft = trim(ff);
+        printf(fft);
+        free(fft);
     }
     else
         printf("Unknown command\n");

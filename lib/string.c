@@ -3,10 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <regex.h>
+#include <stdio.h>
 
 char** split(char* str, char* delimeters, int* array_counter)
 {
-    char** parsed_array;
+    char** parsed_array = 0;
     *array_counter = 0;
     char* copied_str = copy(str);
     char* token = strtok(copied_str, delimeters);
@@ -21,6 +22,33 @@ char** split(char* str, char* delimeters, int* array_counter)
     }
     free(copied_str);
     return parsed_array;
+}
+
+char* trim(char* str)
+{
+    int begin = 0;
+    int end = strlen(str);
+
+    for (int i = 0; i < (strlen(str)+1); i++)
+    {
+        if ((str[i] != ' ') && (str[i] != '\n'))
+        {
+            begin = i;
+            break;
+        }
+    }
+    for (int i = strlen(str)-1; i > 0; i--)
+    {
+        if ((str[i] != ' ') && (str[i] != '\n'))
+        {
+            end = i;
+            break;
+        }
+    }
+
+    char* trimmed_str = (char*) malloc(end - begin + 2);
+    trimmed_str = memcpy(trimmed_str, str+begin, (end - begin + 2));
+    return trimmed_str;
 }
 
 char* copy(char* str)
