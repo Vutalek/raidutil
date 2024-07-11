@@ -1,9 +1,8 @@
-#include "string.h"
+#include "headers/string.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <regex.h>
-#include <stdio.h>
 
 char** split(char* str, char* delimeters, int* array_counter)
 {
@@ -48,6 +47,7 @@ char* trim(char* str)
 
     char* trimmed_str = (char*) malloc(end - begin + 2);
     trimmed_str = memcpy(trimmed_str, str+begin, (end - begin + 2));
+    trimmed_str[end - begin + 1] = '\0';
     return trimmed_str;
 }
 

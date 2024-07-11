@@ -1,5 +1,5 @@
-#include "status.h"
-#include "string.h"
+#include "headers/status.h"
+#include "headers/string.h"
 
 #include <stdio.h>
 #include <string.h>
