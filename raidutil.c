@@ -43,7 +43,7 @@ void get(char* disk)
         {
             copy_to_cmd_if_found_status_str(examine_disk_output[i], "Array UUID");
             copy_to_cmd_if_found_status_str(examine_disk_output[i], "Avail Dev Size");
-            copy_to_cmd_if_found_status_str(examine_disk_output[i], "State");
+            copy_to_cmd_if_found_status_str(examine_disk_output[i], "^State");
             copy_to_cmd_if_found_status_str(examine_disk_output[i], "Device UUID");
             copy_to_cmd_if_found_status_str(examine_disk_output[i], "Device Role");
             char* array_state = regex_match_copy_full_str(examine_disk_output[i], "Array State");
@@ -52,7 +52,7 @@ void get(char* disk)
                 char* temp = regex_match_copy_full_str(array_state, "AA");
                 if (temp != NULL)
                 {
-                    printf("Array State : active");
+                    printf("Array State : active\n");
                     free(temp);
                     free(array_state);
                     continue;
@@ -60,7 +60,7 @@ void get(char* disk)
                 temp = regex_match_copy_full_str(array_state, "..");
                 if (temp != NULL)
                 {
-                    printf("Array State : missing");
+                    printf("Array State : missing\n");
                     free(temp);
                     free(array_state);
                     continue;
@@ -68,7 +68,7 @@ void get(char* disk)
                 temp = regex_match_copy_full_str(array_state, "RR");
                 if (temp != NULL)
                 {
-                    printf("Array State : replacing");
+                    printf("Array State : replacing\n");
                     free(temp);
                     free(array_state);
                     continue;
