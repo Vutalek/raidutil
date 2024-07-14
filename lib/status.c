@@ -72,7 +72,7 @@ void raid_array_status(char* arr)
     while(fgets(buffer, 256, detail_info) != NULL)
     {
         copy_to_cmd_if_found_status_str(buffer, "Persistence");
-        copy_to_cmd_if_found_status_str(buffer, "State : "); //???
+        copy_to_cmd_if_found_status_str(buffer, "^[ ]*State");
         copy_to_cmd_if_found_status_str(buffer, "Active Devices");
         copy_to_cmd_if_found_status_str(buffer, "Working Devices");
         copy_to_cmd_if_found_status_str(buffer, "Failed Devices");

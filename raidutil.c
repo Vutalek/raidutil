@@ -43,7 +43,7 @@ void get(char* disk)
         {
             copy_to_cmd_if_found_status_str(examine_disk_output[i], "Array UUID");
             copy_to_cmd_if_found_status_str(examine_disk_output[i], "Avail Dev Size");
-            copy_to_cmd_if_found_status_str(examine_disk_output[i], "^State");
+            copy_to_cmd_if_found_status_str(examine_disk_output[i], "^[ ]*State");
             copy_to_cmd_if_found_status_str(examine_disk_output[i], "Device UUID");
             copy_to_cmd_if_found_status_str(examine_disk_output[i], "Device Role");
             char* array_state = regex_match_copy_full_str(examine_disk_output[i], "Array State");
