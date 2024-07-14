@@ -1,6 +1,8 @@
 #include "headers/string.h"
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 #include <regex.h>
 
@@ -65,15 +67,35 @@ void clean2d(void*** arr, int rows)
     free(*arr);
 }
 
-char* regex_match_copy_full_str(char* str, char* regex_pattern)
+bool regex_match(char* str, char* regex_pattern)
 {
     regex_t regex;
     int regresult = regcomp(&regex, regex_pattern, REG_EXTENDED);
     if (regresult)
-        return NULL;
+        return false;
     regresult = regexec(&regex, str, 0, NULL, 0);
     if (!regresult)
+        return true;
+    else
+        return false;
+}
+
+char* regex_match_copy_full_str(char* str, char* regex_pattern)
+{
+    if (regex_match(str, regex_pattern))
         return copy(str);
     else
         return NULL;
+}
+
+void trim_and_copy_to_cmd_if_found(char* str, char* need_to_find)
+{
+    char* copy_str = regex_match_copy_full_str(str, need_to_find);
+    if (copy_str != NULL)
+    {
+        char* trimmed_str = trim(copy_str);
+        printf("%s\n", trimmed_str);
+        free(trimmed_str);
+        free(copy_str);
+    }
 }

@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <regex.h>
 #include <stdlib.h>
 
@@ -71,12 +70,12 @@ void raid_array_status(char* arr)
     int regres = regcomp(&regex, "/dev/sd", 0);
     while(fgets(buffer, 256, detail_info) != NULL)
     {
-        copy_to_cmd_if_found_status_str(buffer, "Persistence");
-        copy_to_cmd_if_found_status_str(buffer, "^[ ]*State");
-        copy_to_cmd_if_found_status_str(buffer, "Active Devices");
-        copy_to_cmd_if_found_status_str(buffer, "Working Devices");
-        copy_to_cmd_if_found_status_str(buffer, "Failed Devices");
-        copy_to_cmd_if_found_status_str(buffer, "Spare Devices");
+        trim_and_copy_to_cmd_if_found(buffer, "Persistence");
+        trim_and_copy_to_cmd_if_found(buffer, "^[ ]*State");
+        trim_and_copy_to_cmd_if_found(buffer, "Active Devices");
+        trim_and_copy_to_cmd_if_found(buffer, "Working Devices");
+        trim_and_copy_to_cmd_if_found(buffer, "Failed Devices");
+        trim_and_copy_to_cmd_if_found(buffer, "Spare Devices");
         regres = regexec(&regex, buffer, 0, NULL, 0);
         if (!regres)
         {
@@ -95,18 +94,6 @@ void raid_array_status(char* arr)
 
     clean2d((void***)&disks, number_of_disks);
     pclose(detail_info);
-}
-
-void copy_to_cmd_if_found_status_str(char* str, char* need_to_find)
-{
-    char* copy_str = regex_match_copy_full_str(str, need_to_find);
-    if (copy_str != NULL)
-    {
-        char* trimmed_str = trim(copy_str);
-        printf("%s\n", trimmed_str);
-        free(trimmed_str);
-        free(copy_str);
-    }
 }
 
 void disk_from_array_short_status(char* mdadm_detail_disk_str)
