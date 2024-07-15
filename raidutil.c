@@ -45,9 +45,8 @@ void replace(char* disk, char* replacer)
     system(command);
     sprintf(command, "sudo mdadm /dev/%s --replace %s --with %s", array, disk, replacer);
     system(command);
-    sleep(2);
     sprintf(command, "sudo mdadm /dev/%s --remove %s", array, disk);
-    system(command);
+    while(system(command));
     free(array);
 }
 
