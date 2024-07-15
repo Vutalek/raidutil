@@ -100,6 +100,6 @@ void disk_from_array_short_status(char* mdadm_detail_disk_str)
 {
     int n = 0;
     char** parsed_str = split(mdadm_detail_disk_str, " \n", &n);
-    printf("[%s] %s %s\n", parsed_str[3], parsed_str[6], parsed_str[4]);
+    printf("[%s] %s %s\n", parsed_str[3], parsed_str[n-1], parsed_str[4]);
     clean2d((void***)&parsed_str, n);
 }
