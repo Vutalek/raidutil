@@ -7,6 +7,7 @@
 
 #include <regex.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 void replace(char* disk, char* replacer);
 char* raid_array_of_the_disk(char* disk);
@@ -39,7 +40,13 @@ int main(int argc, char* argv[])
 void replace(char* disk, char* replacer)
 {
     char* array = raid_array_of_the_disk(disk);
-    printf(array);
+    char command[100];
+    sprintf(command, "sudo mdadm /dev/%s --add %s", array, replacer);
+    system(command);
+    sprintf(command, "sudo mdadm /dev/%s --replace %s --with %s", array, disk, replacer);
+    system(command);
+    sprintf(command, "sudo mdadm /dev/%s --remove %s", array, disk);
+    system(command);
     free(array);
 }
 
