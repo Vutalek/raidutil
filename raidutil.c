@@ -133,7 +133,7 @@ bool recovery_finished(char* array)
         if (!regres)
         {
             char* percent_string = (char*) malloc(pmatch[0].rm_eo - pmatch[0].rm_so);
-            sprintf(percent_string, "%.*s", pmatch[0].rm_eo - pmatch[0].rm_so, buffer);
+            sprintf(percent_string, "%.*s", pmatch[0].rm_eo - pmatch[0].rm_so, (buffer + pmatch[0].rm_so));
             char* progressbar = build_progressbar_string(50, atoi(percent_string));
             printf("\rRecovery in process %s %s", progressbar, percent_string);
             fflush(stdout);
