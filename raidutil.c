@@ -8,6 +8,7 @@
 #include <regex.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 void replace(char* disk, char* replacer);
 char* raid_array_of_the_disk(char* disk);
@@ -46,7 +47,48 @@ void replace(char* disk, char* replacer)
     sprintf(command, "sudo mdadm /dev/%s --replace %s --with %s", array, disk, replacer);
     system(command);
     sprintf(command, "sudo mdadm /dev/%s --remove %s", array, disk);
-    while(system(command));
+    while(system(command))
+    {
+        FILE* mdstat = fopen("/proc/mdstat", "r");
+        char buffer[256];
+        bool position_of_array = false;
+        while(fgets(buffer, 256, mdstat) != NULL)
+        {
+            if (position_of_array)
+            {
+                if (regex_match(buffer, "recovery"))
+                {
+                    regex_t regex;
+                    regmatch_t pmatch[1];
+                    int regres = regcomp(&regex, "[0-9]+[.][0-9]+%", REG_EXTENDED);
+                    regres = regexec(&regex, buffer, 1, pmatch, 0);
+                    if (!regres)
+                    {
+                        char* percent_string = (char*) malloc(pmatch[0].rm_eo - pmatch[0].rm_so);
+                        sprintf(percent_string, "%.*s", pmatch[0].rm_eo - pmatch[0].rm_so, buffer);
+                        int percent = atoi(percent_string);
+                        int width = 20;
+                        int progress_count = (percent / 100) * 20;
+                        char* progressbar = (char*) malloc(width + 1 + (pmatch[0].rm_eo - pmatch[0].rm_so) + 1);
+                        for (int i = 0; i < progress_count; i++)
+                            progressbar[i] = '#';
+                        for (int i = progress_count; i < width; i++)
+                            progressbar[i] = ' ';
+                        progressbar[width] = ' ';
+                        sprintf(progressbar+width, "%.*s", pmatch[0].rm_eo - pmatch[0].rm_so, buffer);
+                        printf("\r%s", progressbar);
+                        fflush(stdout);
+                        free(progressbar);
+                        free(percent_string);
+                    }
+                    regfree(&regex);
+                }
+            }
+            else if (regex_match(buffer, array))
+                position_of_array = true;
+        }
+        fclose(mdstat);
+    }
     free(array);
 }
 
