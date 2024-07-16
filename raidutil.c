@@ -12,6 +12,7 @@
 
 void replace(char* disk, char* replacer);
 char* raid_array_of_the_disk(char* disk);
+bool recovery_finished(char* array);
 
 char* build_progressbar_string(int width, int percent);
 
@@ -75,50 +76,9 @@ void replace(char* disk, char* replacer)
     sprintf(command, "sudo mdadm /dev/%s --replace %s --with %s", array, disk, replacer);
     system(command);
 
-    bool recovery_not_finished = true;
-    while(recovery_not_finished)
-    {
-        FILE* mdstat = fopen("/proc/mdstat", "r");
-        char buffer[256];
-        bool position_of_array = false;
-        while(fgets(buffer, 256, mdstat) != NULL)
-        {
-            if (position_of_array)
-            {
-                if (regex_match(buffer, "recovery"))
-                {
-                    regex_t regex;
-                    regmatch_t pmatch[1];
-                    int regres = regcomp(&regex, "[0-9]+[.][0-9]+%", REG_EXTENDED);
-                    regres = regexec(&regex, buffer, 1, pmatch, 0);
-                    if (!regres)
-                    {
-                        char* percent_string = (char*) malloc(pmatch[0].rm_eo - pmatch[0].rm_so);
-                        sprintf(percent_string, "%.*s", pmatch[0].rm_eo - pmatch[0].rm_so, buffer);
-                        char* progressbar = build_progressbar_string(50, atoi(percent_string));
-                        printf("\rRecovery in process %s %s", progressbar, percent_string);
-                        fflush(stdout);
-                        free(progressbar);
-                        free(percent_string);
-                    }
-                    regfree(&regex);
-                }
-                else
-                {
-                    printf("\nRecovery Finished.\n");
-                    recovery_not_finished = false;
-                }
-            }
-            else if (regex_match(buffer, array))
-                position_of_array = true;
-        }
-        fclose(mdstat);
-    }
-    if (!recovery_not_finished)
-    {
-        sprintf(command, "sudo mdadm /dev/%s --remove %s", array, disk);
-        system(command);
-    }
+    while(!recovery_finished(array));
+    sprintf(command, "sudo mdadm /dev/%s --remove %s", array, disk);
+    system(command);
     free(array);
 }
 
@@ -150,4 +110,43 @@ char* raid_array_of_the_disk(char* disk)
 
     fclose(mdstat);
     return array;
+}
+
+bool recovery_finished(char* array)
+{
+    bool finished = false;
+    FILE* mdstat = fopen("/proc/mdstat", "r");
+    char buffer[256];
+    while(fgets(buffer, 256, mdstat) != NULL)
+    {
+        if (regex_match(buffer, array))
+            break;
+    }
+    fgets(buffer, 256, mdstat);
+    fgets(buffer, 256, mdstat);
+    if (regex_match(buffer, "recovery"))
+    {
+        regex_t regex;
+        regmatch_t pmatch[1];
+        int regres = regcomp(&regex, "[0-9]+[.][0-9]+%", REG_EXTENDED);
+        regres = regexec(&regex, buffer, 1, pmatch, 0);
+        if (!regres)
+        {
+            char* percent_string = (char*) malloc(pmatch[0].rm_eo - pmatch[0].rm_so);
+            sprintf(percent_string, "%.*s", pmatch[0].rm_eo - pmatch[0].rm_so, buffer);
+            char* progressbar = build_progressbar_string(50, atoi(percent_string));
+            printf("\rRecovery in process %s %s", progressbar, percent_string);
+            fflush(stdout);
+            free(progressbar);
+            free(percent_string);
+        }
+        regfree(&regex);
+    }
+    else
+    {
+        printf("\nRecovery finished.\n");
+        finished = true;
+    }
+    fclose(mdstat);
+    return finished;
 }
