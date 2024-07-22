@@ -1,11 +1,15 @@
 #include "headers/status.h"
-#include "headers/string.h"
+
+#include "lib/headers/string.h"
+#include "lib/headers/regex.h"
+#include "lib/headers/cleaner.h"
+#include "lib/headers/cmdoutput.h"
 
 #include <stdio.h>
 #include <string.h>
-#include <regex.h>
 #include <stdlib.h>
 
+//main function of this command
 void status()
 {
     int number_of_arrays = 0;
@@ -19,40 +23,41 @@ void status()
         printf("\nInformation on each RAID array.\n\n");
         for(int i = 0; i < number_of_arrays; i++)
             raid_array_status(raid_arrays[i]);
-
-        clean2d((void***)&raid_arrays, number_of_arrays);
     }
-    else
-        printf("There is no RAID.\n");
+    else printf("There is no RAID.\n");
+    clean2d((void***)&raid_arrays, number_of_arrays);
 }
 
+//function that searches in /proc/mdstat for existing RAID arrays
+//returns array of srings of device-names of arrays, for example
+//md127
+//md126
+//result always must be cleaned with free()
 char** find_raid_arrays(int* num)
 {
     char** result = 0;
     *num = 0;
-    regex_t regex;
-    regmatch_t pmatch[1];
-    int regres = regcomp(&regex, "md[0-9]+", REG_EXTENDED);
     FILE* mdstat = fopen("/proc/mdstat", "r");
     if (mdstat == NULL)
-        return NULL;
+        return result;
     char buffer[256];
     while(fgets(buffer, 256, mdstat) != NULL)
     {
-        regres = regexec(&regex, buffer, 1, pmatch, 0);
-        if(!regres)
+        int* off_len = regex_match_offset_length(buffer, "md[0-9]+");
+        if(off_len != NULL)
         {
             result = (char**) realloc(result, sizeof(char*) * (*num+1));
-            result[*num] = (char*) malloc(pmatch[0].rm_eo - pmatch[0].rm_so);
-            sprintf(result[*num], "%.*s", pmatch[0].rm_eo - pmatch[0].rm_so, buffer);
+            result[*num] = (char*) malloc(off_len[1]);
+            sprintf(result[*num], "%.*s", off_len[1], buffer);
             (*num)++;
         }
+        free(off_len);
     }
-    regfree(&regex);
     fclose(mdstat);
     return result;
 }
 
+//info about one RAID array
 void raid_array_status(char* arr)
 {
     char command[100];
@@ -66,18 +71,17 @@ void raid_array_status(char* arr)
 
     char** disks = 0;
     int number_of_disks = 0;
-    regex_t regex;
-    int regres = regcomp(&regex, "/dev/sd", 0);
     while(fgets(buffer, 256, detail_info) != NULL)
     {
+        trim_and_copy_to_cmd_if_found(buffer, "Array Size");
+        trim_and_copy_to_cmd_if_found(buffer, "Used Dev Size");
         trim_and_copy_to_cmd_if_found(buffer, "Persistence");
         trim_and_copy_to_cmd_if_found(buffer, "^[ ]*State");
         trim_and_copy_to_cmd_if_found(buffer, "Active Devices");
         trim_and_copy_to_cmd_if_found(buffer, "Working Devices");
         trim_and_copy_to_cmd_if_found(buffer, "Failed Devices");
         trim_and_copy_to_cmd_if_found(buffer, "Spare Devices");
-        regres = regexec(&regex, buffer, 0, NULL, 0);
-        if (!regres)
+        if (regex_match(buffer, "[ ]+/dev/[a-z0-9]+"))
         {
             disks = (char**) realloc(disks, sizeof(char*) * (number_of_disks+1));
             disks[number_of_disks] = (char*) malloc(256);
@@ -85,7 +89,6 @@ void raid_array_status(char* arr)
             number_of_disks++;
         }
     }
-    regfree(&regex);
 
     printf("Disks status:\n");
     for(int i = 0; i < number_of_disks; i++)
@@ -96,6 +99,7 @@ void raid_array_status(char* arr)
     pclose(detail_info);
 }
 
+//short info about disk in an array
 void disk_from_array_short_status(char* mdadm_detail_disk_str)
 {
     int n = 0;

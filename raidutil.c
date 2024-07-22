@@ -1,7 +1,6 @@
-#include "lib/headers/string.h"
-#include "lib/headers/status.h"
-#include "lib/headers/get.h"
-#include "lib/headers/replace.h"
+#include "commands/headers/status.h"
+#include "commands/headers/get.h"
+#include "commands/headers/replace.h"
 
 #include <stdio.h>
 #include <string.h>

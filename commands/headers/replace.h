@@ -7,8 +7,8 @@ void replace(char* disk, char* replacer);
 
 char* raid_array_of_the_disk(char* disk);
 
-bool recovery_finished(char* array);
+void recovery_progress(char* array);
 
-char* build_progressbar_string(int width, int percent);
+bool recovery_finished(char* array);
 
 #endif

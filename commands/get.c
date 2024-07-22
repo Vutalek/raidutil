@@ -1,10 +1,13 @@
 #include "headers/get.h"
-#include "headers/string.h"
+
+#include "lib/headers/regex.h"
+#include "lib/headers/cmdoutput.h"
 
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
+//main function of this command
 void get(char* disk)
 {
     if (disk_in_raid_array(disk))
@@ -32,26 +35,16 @@ void get(char* disk)
         }
         pclose(examine_info);
     }
-    else
-        printf("This disk is not in RAID.\n");
+    else printf("This disk is not in RAID.\n");
 }
 
+//checks if a disk has RAID metadata
 bool disk_in_raid_array(char* disk)
 {
-    char buffer[256];
     char command[100];
-    sprintf(command, "sudo mdadm --examine %s", disk);
-    FILE* examine_info = popen(command, "r");
-    char* temp_copy = 0;
-    while (fgets(buffer, 256, examine_info) != NULL)
-    {
-        temp_copy = regex_match_copy_full_str(buffer, "Raid");
-        if (temp_copy != NULL)
-        {
-            free(temp_copy);
-            return true;
-        }
-    }
-    pclose(examine_info);
-    return false;
+    sprintf(command, "sudo mdadm --examine %s &> /dev/null", disk);
+    int result = system(command);
+    if (result)
+        return false;
+    else return true;
 }

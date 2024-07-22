@@ -1,11 +1,10 @@
 #include "headers/string.h"
 
 #include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
 #include <string.h>
-#include <regex.h>
 
+//returns array of subsrtings
+//result always must be cleaned with free()
 char** split(char* str, char* delimeters, int* array_counter)
 {
     char** parsed_array = 0;
@@ -25,6 +24,8 @@ char** split(char* str, char* delimeters, int* array_counter)
     return parsed_array;
 }
 
+//deletes spaces and \n in the beggining and in the end of string
+//result always must be cleaned with free()
 char* trim(char* str)
 {
     int begin = 0;
@@ -53,49 +54,11 @@ char* trim(char* str)
     return trimmed_str;
 }
 
+//returns full copy of string
+//result always must be cleaned with free()
 char* copy(char* str)
 {
     char* copied_str = (char*) malloc(strlen(str) + 1);
     copied_str = memcpy(copied_str, str, (strlen(str) + 1));
     return copied_str;
-}
-
-void clean2d(void*** arr, int rows)
-{
-    for(int i = 0; i < rows; i++)
-        free((*arr)[i]);
-    free(*arr);
-}
-
-bool regex_match(char* str, char* regex_pattern)
-{
-    regex_t regex;
-    int regresult = regcomp(&regex, regex_pattern, REG_EXTENDED);
-    if (regresult)
-        return false;
-    regresult = regexec(&regex, str, 0, NULL, 0);
-    if (!regresult)
-        return true;
-    else
-        return false;
-}
-
-char* regex_match_copy_full_str(char* str, char* regex_pattern)
-{
-    if (regex_match(str, regex_pattern))
-        return copy(str);
-    else
-        return NULL;
-}
-
-void trim_and_copy_to_cmd_if_found(char* str, char* need_to_find)
-{
-    char* copy_str = regex_match_copy_full_str(str, need_to_find);
-    if (copy_str != NULL)
-    {
-        char* trimmed_str = trim(copy_str);
-        printf("%s\n", trimmed_str);
-        free(trimmed_str);
-        free(copy_str);
-    }
 }
