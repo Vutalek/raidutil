@@ -14,7 +14,7 @@ clean:
 	rmdir bin
 	rmdir build
 
-install:
+install: $(TARGET)
 	install bin/$(TARGET) $(PREFIX)
 
 uninstall:
