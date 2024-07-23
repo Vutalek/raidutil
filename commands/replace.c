@@ -8,6 +8,10 @@
 #include <unistd.h>
 
 //main function of this command
+//the strategy of replacement is next:
+//1. add new disk to an array
+//2. use mdadm to replace disks
+//3. remove old disk from array
 void replace(char* disk, char* replacer)
 {
     char* array = raid_array_of_the_disk(disk);
@@ -51,7 +55,7 @@ void replace(char* disk, char* replacer)
     free(array);
 }
 
-//finds raid_array which contains this disk
+//finds RAID array which contains this disk
 //return device name of RAID array such as md127
 //result always must be cleaned with free()
 char* raid_array_of_the_disk(char* disk)
@@ -81,7 +85,8 @@ char* raid_array_of_the_disk(char* disk)
     return array;
 }
 
-//checks progress of recovery and print out progress bar
+//checks progress of recovery in /proc/mdstat
+//and print out progress bar
 void recovery_progress(char* array)
 {
     FILE* mdstat = fopen("/proc/mdstat", "r");

@@ -28,7 +28,7 @@ void status()
     clean2d((void***)&raid_arrays, number_of_arrays);
 }
 
-//function that searches in /proc/mdstat for existing RAID arrays
+//this function searches in /proc/mdstat for existing RAID arrays
 //returns array of srings of device-names of arrays, for example
 //md127
 //md126

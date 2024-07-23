@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-//returns array of subsrtings
+//returns array of substrings of str, that were separated by space and/or \n
 //result always must be cleaned with free()
 char** split(char* str, char* delimeters, int* array_counter)
 {
@@ -24,7 +24,7 @@ char** split(char* str, char* delimeters, int* array_counter)
     return parsed_array;
 }
 
-//deletes spaces and \n in the beggining and in the end of string
+//deletes spaces and \n in the beggining and in the end of str
 //result always must be cleaned with free()
 char* trim(char* str)
 {

@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//checks if str matches regex pattern need_to_find
+//if it is, then str is trimmed and printed in console
 void trim_and_copy_to_cmd_if_found(char* str, char* need_to_find)
 {
     char* copy_str = regex_match_copy_full_str(str, need_to_find);
@@ -18,6 +20,10 @@ void trim_and_copy_to_cmd_if_found(char* str, char* need_to_find)
     free(copy_str);
 }
 
+//this function bulids string of progress bar in such way
+//width = 5, percent = 60
+//result string:
+//[###  ]
 char* build_progressbar_string(int width, int percent)
 {
     int progress_count = (percent / 100.0) * width;
